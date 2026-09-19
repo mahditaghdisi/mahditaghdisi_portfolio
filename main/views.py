@@ -15,10 +15,9 @@ def landing(request):
 
 
 def resume(request):
-    lang = request.GET.get("lang") or request.session.get("lang") or "fa"
+    lang = request.GET.get("lang") or request.COOKIES.get("lang") or "fa"
     if lang not in ("fa", "en"):
         lang = "fa"
-    request.session["lang"] = lang
 
     sent = False
     if request.method == "POST":
@@ -40,4 +39,6 @@ def resume(request):
         "form": form,
         "sent": sent,
     }
-    return render(request, "main/resume.html", context)
+    response = render(request, "main/resume.html", context)
+    response.set_cookie("lang", lang, max_age=60 * 60 * 24 * 365, samesite="Lax")
+    return response
