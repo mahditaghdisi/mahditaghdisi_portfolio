@@ -18,6 +18,22 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get(
     "CSRF_TRUSTED_ORIGINS", ""
 ).split(",") if o.strip()]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {"handlers": ["console"], "level": "INFO"},
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
