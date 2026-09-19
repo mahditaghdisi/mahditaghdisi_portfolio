@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ lang|default:'fa' }}" dir="{{ dir|default:'rtl' }}" data-lang="{{ lang|default:'fa' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}مهدی تقدیسی{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="top-controls">
+    <button id="theme-toggle" class="icon-btn" title="تغییر تم">🌙</button>
+  </div>
+
+  {% block content %}{% endblock %}
+
+  <script src="{% static 'main/js/theme.js' %}"></script>
+  <script src="{% static 'main/js/cursor.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

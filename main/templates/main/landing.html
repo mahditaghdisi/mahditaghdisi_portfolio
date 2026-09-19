@@ -1,0 +1,42 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}مهدی تقدیسی | Mahdi Taghdisi{% endblock %}
+
+{% block content %}
+<main class="container-page">
+  <div class="wrap" style="padding-top: 90px;">
+    <div class="hero-card">
+      <div class="hero-spotlight"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="eyebrow" data-fa="محقق هوش مصنوعی و بینایی کامپیوتر" data-en="AI Researcher &amp; Computer Vision">
+            محقق هوش مصنوعی و بینایی کامپیوتر
+          </span>
+          <h1>
+            <span data-fa="مهدی تقدیسی هادی‌پور" data-en="Mahdi Taghdisi Hadipour">مهدی تقدیسی هادی‌پور</span>
+          </h1>
+          <p data-fa="محقق هوش مصنوعی، توسعه‌دهنده و مدرس پایتون؛ متخصص در بینایی کامپیوتر، یادگیری عمیق و توسعه فول‌استک با جنگو."
+             data-en="AI researcher, developer, and Python instructor specializing in computer vision, deep learning, and full-stack development with Django.">
+            محقق هوش مصنوعی، توسعه‌دهنده و مدرس پایتون؛ متخصص در بینایی کامپیوتر، یادگیری عمیق و توسعه فول‌استک با جنگو.
+          </p>
+        </div>
+        <div class="hero-visual">
+          <spline-viewer url="{{ spline_scene_url }}" loading-anim-type="spinner-small-dark"></spline-viewer>
+        </div>
+      </div>
+    </div>
+
+    <div class="landing-actions">
+      <button id="lang-toggle" class="pill-btn">English</button>
+      <a id="resume-link" class="pill-btn primary" data-href="{% url 'main:resume' %}" href="{% url 'main:resume' %}?lang=fa">
+        <span data-fa="صفحهٔ رزومه" data-en="Resume Page">صفحهٔ رزومه</span>
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'main/js/hero-spotlight.js' %}"></script>
+<script src="{% static 'main/js/language-toggle.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}{{ r.name }} — {{ r.title }}{% endblock %}
+
+{% block content %}
+<main class="container-page">
+  <div class="top-controls" style="inset-inline-start: 18px; inset-inline-end: auto;">
+    <a href="{% url 'main:landing' %}?lang={{ lang }}" class="icon-btn" title="{{ r.back_home }}">
+      {% if dir == "rtl" %}→{% else %}←{% endif %}
+    </a>
+    <a href="?lang={{ other_lang }}" class="icon-btn" title="switch language">
+      {% if lang == "fa" %}EN{% else %}فا{% endif %}
+    </a>
+  </div>
+
+  <div class="wrap">
+    <header class="resume-header">
+      <h1>{{ r.name }}</h1>
+      <div class="subtitle">{{ r.title }}</div>
+      <div class="resume-meta">
+        <span>{{ r.email }}</span>
+        <span>{{ r.phone }}</span>
+        <span>{{ r.location }}</span>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>{{ r.summary_label }}</h2>
+      <p class="summary-text">{{ r.summary }}</p>
+    </section>
+
+    <section class="section">
+      <h2>{{ r.skills_label }}</h2>
+
+      <div class="sphere-wrap">
+        <div id="skills-sphere" data-skills="{{ skills_json }}"></div>
+      </div>
+
+      <div class="skill-groups">
+        {% for group in r.skills_groups %}
+        <div class="skill-group">
+          <h3>{{ group.title }}</h3>
+          <div class="tags">
+            {% for item in group.items %}
+            <span class="tag">{{ item }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>{{ r.experience_label }}</h2>
+      <div class="card-list">
+        {% for job in r.experience %}
+        <div class="item-card">
+          <h3>{{ job.role }}</h3>
+          <div class="meta">{{ job.org }} · {{ job.period }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>{{ r.projects_label }}</h2>
+      <div class="card-list">
+        {% for p in r.projects %}
+        <div class="item-card">
+          <h3>{{ p.title }}</h3>
+          <div class="meta">{{ p.meta }}</div>
+          <p>{{ p.desc }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="two-col">
+      <section class="section" style="border-top:none;">
+        <h2>{{ r.education_label }}</h2>
+        <div class="card-list">
+          {% for e in r.education %}
+          <div class="item-card">
+            <h3>{{ e.degree }}</h3>
+            <div class="meta">{{ e.org }} · {{ e.period }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="section" style="border-top:none;">
+        <h2>{{ r.references_label }}</h2>
+        <div class="card-list">
+          {% for ref in r.references %}
+          <div class="item-card">
+            <h3>{{ ref.name }}</h3>
+            <p>{{ ref.role }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
+    <section class="section">
+      <h2>{{ r.certificates_label }}</h2>
+      <div class="card-list">
+        {% for c in r.certificates %}
+        <div class="item-card"><p>{{ c }}</p></div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>{{ r.volunteer_label }}</h2>
+      <div class="card-list">
+        {% for v in r.volunteer %}
+        <div class="item-card">
+          <h3>{{ v.title }}</h3>
+          <div class="meta">{{ v.period }}</div>
+          <p>{{ v.desc }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>{{ r.contact_label }}</h2>
+      <p class="summary-text">{{ r.contact_desc }}</p>
+
+      <div class="contact-card">
+        <div class="contact-inner">
+          {% if sent %}
+          <div class="success-msg">{{ r.contact_success }}</div>
+          {% endif %}
+          <form method="post" class="contact-form">
+            {% csrf_token %}
+            <div class="field">
+              <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+              {{ form.name }}
+              {{ form.name.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+              {{ form.phone }}
+              {{ form.phone.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+              {{ form.description }}
+              {{ form.description.errors }}
+            </div>
+            <button type="submit" class="submit-btn">{{ r.contact_submit }}</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      © {{ r.name }} · mahditaghdisi.ir
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'main/js/skills-sphere.js' %}"></script>
+{% endblock %}
