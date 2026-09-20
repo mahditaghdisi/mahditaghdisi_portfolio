@@ -38,6 +38,8 @@ html, body {
   font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
   transition: background .35s ease, color .35s ease;
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 html[dir="ltr"], html[dir="ltr"] body { font-family: 'Inter', 'Vazirmatn', 'Segoe UI', sans-serif; }
@@ -175,8 +177,21 @@ html[data-theme="light"] .hero-text h1 {
 }
 
 @media (max-width: 820px) {
-  .hero-inner { flex-direction: column; }
-  .hero-visual { min-height: 280px; }
+  .hero-card { height: auto; }
+  .hero-inner,
+  html[dir="rtl"] .hero-inner,
+  html[dir="ltr"] .hero-inner {
+    flex-direction: column;
+  }
+  /* روی موبایل ربات بالا، متن پایین */
+  .hero-visual { order: 1; flex: none; width: 100%; height: 280px; min-width: 0; }
+  .hero-text { order: 2; flex: none; padding: 10px 22px 26px; text-align: center; }
+  .hero-text p { max-width: 100%; margin-inline: auto; }
+}
+
+@media (max-width: 480px) {
+  .hero-visual { height: 220px; }
+  .hero-text { padding: 22px 16px 6px; }
 }
 
 /* ---------- Landing bottom buttons ---------- */
@@ -220,6 +235,13 @@ html[data-theme="light"] .hero-text h1 {
   gap: 14px;
   color: var(--text-muted);
   font-size: 14px;
+}
+/* LTR fields (phone, email) inside an RTL page must be isolated, or the
+   bidi algorithm re-orders their space-separated groups on screen. */
+.ltr-text {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
 }
 
 .section {
@@ -278,6 +300,7 @@ html[data-theme="light"] .hero-text h1 {
   justify-content: center;
   perspective: 900px;
   margin-bottom: 10px;
+  overflow: hidden; /* keeps rotating tags from widening the page on narrow screens */
 }
 #skills-sphere {
   position: relative;
@@ -299,6 +322,12 @@ html[data-theme="light"] .hero-text h1 {
   transform-style: preserve-3d;
   backface-visibility: visible;
   user-select: none;
+}
+
+@media (max-width: 480px) {
+  .sphere-wrap { height: 280px; }
+  #skills-sphere { width: 170px; height: 170px; }
+  .sphere-tag { font-size: 11px; padding: 4px 9px; }
 }
 
 /* ---------- Contact / border-beam ---------- */
