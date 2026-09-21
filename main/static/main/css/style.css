@@ -33,13 +33,24 @@ html[data-theme="light"] {
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
   transition: background .35s ease, color .35s ease;
   scroll-behavior: smooth;
   overflow-x: hidden;
-  max-width: 100vw;
+}
+
+/* رفع باگ کلاسیک CSS: آیتم‌های grid/flex به‌صورت پیش‌فرض min-width:auto دارن،
+   یعنی اگه یه تیکه متن غیرقابل‌شکستن داشته باشن، کل باکس عریض‌تر از صفحه می‌شه.
+   با صفر کردن min-width، مرورگر مجبور می‌شه متن رو داخل عرض واقعی نگه داره. */
+* { min-width: 0; }
+
+img, svg, spline-viewer, video, canvas { max-width: 100%; }
+
+h1, h2, h3, p, a, span, div, .tag, .meta, li {
+  overflow-wrap: anywhere;
 }
 
 html[dir="ltr"], html[dir="ltr"] body { font-family: 'Inter', 'Vazirmatn', 'Segoe UI', sans-serif; }
