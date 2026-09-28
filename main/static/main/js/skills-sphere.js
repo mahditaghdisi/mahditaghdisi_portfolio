@@ -3,7 +3,9 @@
   if (!wrap) return;
 
   const words = JSON.parse(wrap.getAttribute("data-skills") || "[]");
-  const radius = 130;
+  // Read the box's actual rendered size (it shrinks on small screens via CSS)
+  // instead of a fixed desktop radius, so tags never spill outside on mobile.
+  let radius = wrap.clientWidth / 2 || 130;
   const count = words.length;
 
   const nodes = words.map((word, i) => {
@@ -78,6 +80,10 @@
     rotX = Math.max(-1.1, Math.min(1.1, rotX));
     lastX = e.clientX;
     lastY = e.clientY;
+  });
+
+  window.addEventListener("resize", () => {
+    radius = wrap.clientWidth / 2 || 130;
   });
 
   requestAnimationFrame(loop);

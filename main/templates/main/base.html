@@ -10,14 +10,19 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body>
+  {% block progress_bar %}{% endblock %}
+
   <div class="top-controls">
     <button id="theme-toggle" class="icon-btn" title="تغییر تم">🌙</button>
   </div>
 
   {% block content %}{% endblock %}
 
+  {% block dock %}{% endblock %}
+
   <script src="{% static 'main/js/theme.js' %}"></script>
   <script src="{% static 'main/js/cursor.js' %}"></script>
+  <script src="{% static 'main/js/dock.js' %}"></script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

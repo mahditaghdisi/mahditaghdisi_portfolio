@@ -9,6 +9,7 @@
   --text-muted: #a1a1aa;
   --accent: #ff5b2e;
   --accent-2: #ffa14a;
+  --accent-glow: rgba(255, 91, 46, 0.55);
   --cursor-color: #ffffff;
   --cursor-ring: rgba(255, 91, 46, 0.55);
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
@@ -23,6 +24,7 @@ html[data-theme="light"] {
   --text-muted: #55555f;
   --accent: #e0491f;
   --accent-2: #ff8a3d;
+  --accent-glow: rgba(224, 73, 31, 0.45);
   --cursor-color: #15151a;
   --cursor-ring: rgba(224, 73, 31, 0.45);
   --shadow: 0 20px 50px rgba(20, 20, 30, 0.12);
@@ -258,6 +260,7 @@ html[data-theme="light"] .hero-text h1 {
 .section {
   padding: 34px 0;
   border-top: 1px solid var(--border);
+  scroll-margin-top: 60px; /* so clicking a nav link doesn't hide the title under the sticky navbar */
 }
 .section h2 {
   font-size: 20px;
@@ -291,6 +294,7 @@ html[data-theme="light"] .hero-text h1 {
 
 .card-list { display: grid; gap: 14px; }
 .item-card {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -299,12 +303,72 @@ html[data-theme="light"] .hero-text h1 {
 .item-card h3 { margin: 0 0 4px; font-size: 16px; }
 .item-card .meta { color: var(--accent); font-size: 13px; margin-bottom: 6px; }
 .item-card p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
+.item-card p + p { margin-top: 6px; }
+
+/* scroll-triggered card reveal (fade + slight rise) */
+.reveal-card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal-card.is-revealed { opacity: 1; transform: translateY(0); }
+
+/* colorful per-character title reveal, inspired by magicui's DiaTextReveal */
+.dia-reveal { display: inline-block; }
+.dia-char {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(6px);
+  transition: opacity .45s ease, transform .45s ease, filter .45s ease;
+}
+.reveal-card.is-revealed .dia-char { opacity: 1; filter: blur(0); transform: translateY(0); }
+
+/* plain, unstyled links — no underline, no blue; just a color shift to the
+   site's own accent color on hover. Used for every link this project adds
+   on top of the base template (email/LinkedIn/phone, project links,
+   certificate verification links, reference emails, the "view image" button). */
+.plain-link {
+  color: var(--text);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  transition: color .2s ease;
+}
+.plain-link:visited { color: var(--text); }
+.plain-link:hover { color: var(--accent); }
+
+/* the "view image" trigger reads as a plain link, inline with the card's
+   own text rather than tucked away as a corner icon */
+.view-image-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+}
+.view-image-link:hover { color: var(--accent); }
+
+.card-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+.card-links .plain-link { margin-top: 0; }
 
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
 
+/* section title blur-in reveal on scroll, inspired by magicui's TextAnimate */
+.reveal-title {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(10px);
+  transition: opacity .6s ease, filter .6s ease, transform .6s ease;
+}
+.reveal-title.is-revealed { opacity: 1; filter: blur(0); transform: translateY(0); }
+
 /* ---------- Skills sphere ---------- */
 .sphere-wrap {
+  position: relative;
   height: 380px;
   display: flex;
   align-items: center;
@@ -315,6 +379,7 @@ html[data-theme="light"] .hero-text h1 {
 }
 #skills-sphere {
   position: relative;
+  z-index: 2;
   width: 260px;
   height: 260px;
   transform-style: preserve-3d;
@@ -397,6 +462,7 @@ html[data-theme="light"] .hero-text h1 {
 
 .submit-btn {
   justify-self: start;
+  position: relative;
   padding: 12px 28px;
   border-radius: 999px;
   border: none;
@@ -404,6 +470,22 @@ html[data-theme="light"] .hero-text h1 {
   color: #fff;
   font-weight: 600;
   font-size: 14px;
+  cursor: pointer;
+}
+.pulsating-btn span { position: relative; z-index: 2; }
+.pulsating-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: pulsate-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+@keyframes pulsate-ring {
+  0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  70% { box-shadow: 0 0 0 14px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
 }
 
 .success-msg {
@@ -425,3 +507,159 @@ html[data-theme="light"] .hero-text h1 {
   padding: 30px 0 50px;
 }
 .footer-note a { color: var(--accent); text-decoration: none; }
+
+/* ---------- Scroll progress bar (magicui: scroll-progress) ---------- */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  z-index: 999;
+  transition: width .1s linear;
+}
+
+/* ---------- Dock footer (magicui: dock) ---------- */
+/* Part of the normal page footer now (not a floating overlay) — sits once
+   at the true bottom of the page and scrolls away with the rest of it. */
+.dock {
+  position: static;
+  margin: 30px auto 40px;
+  width: fit-content;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow);
+}
+.dock-icon {
+  position: relative;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  transition: transform .15s ease;
+  transform-origin: bottom center;
+}
+.dock-icon:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+}
+.dock-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+  margin: 4px 2px;
+}
+
+/* ---------- In-page section navigation (resume only) ---------- */
+.resume-nav {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+.resume-nav-inner {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.resume-nav a {
+  flex: none;
+  padding: 14px 2px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color .2s ease, border-color .2s ease;
+}
+.resume-nav a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---------- Popup modals (success message / image lightbox) ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity .2s ease;
+  padding: 20px;
+}
+.modal-overlay.is-open { opacity: 1; }
+.modal-overlay[hidden] { display: none; }
+.modal-box {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transform: scale(.92);
+  transition: transform .2s ease;
+}
+.modal-overlay.is-open .modal-box { transform: scale(1); }
+.modal-box p { margin: 0 0 18px; color: var(--text); font-size: 15px; line-height: 1.8; }
+.modal-ok-btn {
+  padding: 10px 26px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.modal-box--image {
+  max-width: min(90vw, 800px);
+  width: fit-content;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.modal-box--image img {
+  display: block;
+  max-width: 100%;
+  max-height: 80vh;
+  width: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+.modal-box--image .modal-ok-btn {
+  position: absolute;
+  top: -14px;
+  inset-inline-end: -14px;
+  width: 34px; height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .dock { gap: 4px; padding: 6px 10px; }
+  .dock-icon { width: 34px; height: 34px; }
+}

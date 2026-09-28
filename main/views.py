@@ -1,4 +1,6 @@
 import json
+from django.conf import settings
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import ContactForm
@@ -14,6 +16,24 @@ def landing(request):
     return render(request, "main/landing.html", context)
 
 
+def _notify_by_email(contact_message):
+    """Best-effort email notification — never breaks the page if email isn't configured."""
+    if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+        return
+    body = (
+        f"نام: {contact_message.name}\n"
+        f"شماره تماس: {contact_message.phone}\n"
+        f"توضیحات: {contact_message.description or '-'}"
+    )
+    send_mail(
+        subject="کار",
+        message=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[settings.CONTACT_NOTIFY_EMAIL],
+        fail_silently=True,
+    )
+
+
 def resume(request):
     lang = request.GET.get("lang") or request.COOKIES.get("lang") or "fa"
     if lang not in ("fa", "en"):
@@ -23,7 +43,8 @@ def resume(request):
     if request.method == "POST":
         form = ContactForm(request.POST, lang=lang)
         if form.is_valid():
-            form.save()
+            contact_message = form.save()
+            _notify_by_email(contact_message)
             sent = True
             form = ContactForm(lang=lang)
     else:
