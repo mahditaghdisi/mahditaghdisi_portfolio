@@ -446,6 +446,16 @@ html[data-theme="light"] .hero-text h1 {
 .contact-form { display: grid; gap: 16px; margin-top: 18px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 13px; color: var(--text-muted); }
+/* honeypot: kept in the DOM and focusable-in-theory so bots that blanket-fill
+   forms still catch it, but invisible and unreachable for real visitors */
+.field-honeypot-wrap {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .field-input {
   background: var(--bg-elevated);
   border: 1px solid var(--border);

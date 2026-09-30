@@ -166,6 +166,7 @@
         <div class="contact-inner">
           <form method="post" class="contact-form" id="contact-form" data-success="{% if sent %}1{% else %}0{% endif %}">
             {% csrf_token %}
+            <div class="field-honeypot-wrap" aria-hidden="true">{{ form.website }}</div>
             <div class="field">
               <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
               {{ form.name }}

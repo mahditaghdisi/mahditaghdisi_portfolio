@@ -107,6 +107,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# سخت‌گیری‌های امنیتی — فقط وقتی DEBUG=False (یعنی روی Render) فعال می‌شن،
+# تا موقع توسعه‌ی لوکال (http://127.0.0.1) مشکلی پیش نیاد.
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True          # هر درخواست http رو خودکار به https ریدایرکت می‌کنه
+    SESSION_COOKIE_SECURE = True        # کوکی سشن فقط روی https ارسال می‌شه
+    CSRF_COOKIE_SECURE = True           # کوکی CSRF هم همینطور
+    SECURE_HSTS_SECONDS = 31536000      # به مرورگر می‌گه یک سال فقط https رو قبول کنه
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True  # جلوی حدس نوع فایل توسط مرورگر رو می‌گیره
+    X_FRAME_OPTIONS = "DENY"            # سایت داخل iframe سایت دیگه لود نشه (ضد clickjacking)
+
 # ایمیل: اختیاریه — اگه EMAIL_HOST_USER / EMAIL_HOST_PASSWORD ست نشن،
 # سایت بدون خطا کار می‌کنه، فقط ایمیل نوتیفیکیشن فرم تماس ارسال نمی‌شه.
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
