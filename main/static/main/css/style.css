@@ -383,6 +383,7 @@ html[data-theme="light"] .hero-text h1 {
   width: 260px;
   height: 260px;
   transform-style: preserve-3d;
+  touch-action: none; /* drag-to-rotate on mobile no longer also scrolls the page */
 }
 .sphere-tag {
   position: absolute;

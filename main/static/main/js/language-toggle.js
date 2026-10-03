@@ -14,6 +14,9 @@
     root.setAttribute("dir", lang === "fa" ? "rtl" : "ltr");
     root.setAttribute("data-lang", lang);
     localStorage.setItem(KEY, lang);
+    // also set it as a cookie, so the server (landing/resume views) renders
+    // in the same language on the very next page load, not just this tab
+    document.cookie = "lang=" + lang + ";path=/;max-age=31536000;SameSite=Lax";
 
     const resumeLink = document.getElementById("resume-link");
     if (resumeLink) {

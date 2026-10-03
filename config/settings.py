@@ -79,6 +79,9 @@ DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
+        conn_health_checks=True,  # قبل از استفاده‌ی دوباره از یه کانکشن قدیمی، سالم‌بودنش رو چک می‌کنه
+        # مهمه برای Neon: چون کامپیوتش بعد از چند دقیقه بی‌کاری می‌خوابه و بیدار می‌شه،
+        # بدون این گزینه ممکنه جنگو بخواد از یه کانکشن "مرده" دوباره استفاده کنه و خطا بگیره.
     )
 }
 
@@ -128,4 +131,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_TIMEOUT = 10  # اگه Gmail توی ۱۰ ثانیه جواب نده، به جای گیرکردن بی‌نهایت، خطا می‌ده و رها می‌کنه
 CONTACT_NOTIFY_EMAIL = os.environ.get("CONTACT_NOTIFY_EMAIL", "mahditaghdisi650@gmail.com")
